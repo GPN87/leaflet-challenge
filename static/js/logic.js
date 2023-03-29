@@ -25,6 +25,24 @@ function createMap(earthquakes){
     L.control.layers(baseMaps, overlayMaps, {
         collapsed: false
       }).addTo(map);
+
+    let legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+        let div = L.DomUtil.create('div', 'legend');
+        let grades = [0, 100, 300, 500, 700];
+        let colors = ['yellow', 'orange', 'red', 'maroon', 'darkred'];
+
+    div.innerHTML += '<b>Depth</b><br>';
+    for (let i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + colors[i] + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+    return div;
+};
+
+legend.addTo(map);
 }
 
 
@@ -42,8 +60,8 @@ function createMarkers(response){
             color: depthScale(depth),
             fillColor:depthScale(depth),
             fillOpacity:0.75,
-            radius: properties.mag
-        }).bindPopup(`Location: ${properties.place} <hr> Magnitude: ${properties.mag}`);
+            radius: 7**properties.mag
+        }).bindPopup(`<h4> Location: ${properties.place} </h4><hr> Magnitude: ${properties.mag} <br> Depth: ${depth}`);
         quakeCircles.push(quakecircle);
     })
     console.log(quakeCircles);
